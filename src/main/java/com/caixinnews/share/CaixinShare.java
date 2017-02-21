@@ -35,6 +35,9 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +48,8 @@ public class CaixinShare {
     public static final String SHARE_PLATFORM_WEIBO = "SinaWeibo";
     public static final String SHARE_PLATFORM_EMAIL = "Email";
 
+
     private Context context;
-//    private static CaixinShare instance;
     private boolean isInstalledWeibo;
     private int supportApiLevel;
 
@@ -54,25 +57,13 @@ public class CaixinShare {
         this.context = activity;
     }
 
-//    public static synchronized CaixinShare getInstance(Activity activity) {
-//        if (instance == null) {
-//            synchronized (CaixinShare.class) {
-//                if (instance == null) {
-//                    instance = new CaixinShare(activity);
-//                }
-//            }
-//        }else{
-//            instance.context = activity;
-//        }
-//
-//        return instance;
-//    }
-
-//    public static CaixinShare getInstanceForQQ(Activity activity) {//仅返回用于QQ分享的实例，需要绑定activity
-//        CaixinShare instance_QQ = new CaixinShare(activity);
-//        return instance_QQ;
-//    }
-
+    public static void init(String APP_ID_WX,String APP_ID_QQ,String APP_KEY_WEIBO,String REDIRECT_URL_WEIBO,String SCOPE_WEIBO){
+        Constants.APP_ID = APP_ID_WX;
+        Constants.APP_ID_QQ = APP_ID_QQ;
+        Constants.APP_KEY_WEIBO = APP_KEY_WEIBO;
+        Constants.REDIRECT_URL_WEIBO = REDIRECT_URL_WEIBO;
+        Constants.SCOPE_WEIBO = SCOPE_WEIBO;
+    }
 
     private static final int THUMB_SIZE = 150;
     public void shareToPlatform(CXShareEntity entity) {
@@ -137,6 +128,7 @@ public class CaixinShare {
             WXMediaMessage msg = new WXMediaMessage();
             msg.mediaObject = imgObj;
 
+
             Bitmap bmp = BitmapFactory.decodeFile(entity.imagePath);
             Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
             bmp.recycle();
@@ -167,6 +159,7 @@ public class CaixinShare {
     }
 
 
+
     int shareType = -1;//qq分享类别
 
     public void shareToQQ(CXShareEntity entity) {
@@ -188,7 +181,7 @@ public class CaixinShare {
         params.putString(shareType == QQShare.SHARE_TO_QQ_TYPE_IMAGE ? QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL
                 : QQShare.SHARE_TO_QQ_IMAGE_URL, entity.imagePath);
 
-        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "appName");
+        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "AppName");
         params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, shareType);
 //        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
         doShareToQQ(params, mTencent);
@@ -303,7 +296,7 @@ public class CaixinShare {
                     }
                     recommonedIntents.add(targeted);
                 } else {
-                   continue;
+                    continue;
                 }
 
             }
